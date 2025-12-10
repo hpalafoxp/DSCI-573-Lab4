@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Otter
+.OTTER_LOG
+
 # Distribution / packaging
 .Python
 build/
