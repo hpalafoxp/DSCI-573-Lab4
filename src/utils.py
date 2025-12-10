@@ -24,7 +24,7 @@ def custom_train_test_split(
 
     for cat, count in df.groupby(cat_col, sort=False)[cat_col].agg("count").items():
         cum_count += count
-        if cum_count / len(df) < 1 - test_size:
+        if (cum_count / len(df)) >= (1 - test_size):
             cutoff = cat
             break
 
@@ -34,3 +34,32 @@ def custom_train_test_split(
     test_df = df.loc[cutoff:].reset_index()
 
     return train_df, test_df
+
+
+def inhouse_haversine(lat1, lon1, lat2, lon2):
+    """
+    Compute great-circle distance using the Haversine formula.
+    Works with scalars or NumPy arrays.
+    Distance is returned in kilometers.
+    """
+
+    R = 6371.0  # Earth radius in km
+
+    # Convert to radians
+    lat1 = np.radians(lat1)
+    lon1 = np.radians(lon1)
+    lat2 = np.radians(lat2)
+    lon2 = np.radians(lon2)
+
+    # Differences
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+
+    # Haversine formula
+    a = (
+        np.sin(dlat / 2) ** 2
+        + np.cos(lat1) * np.cos(lat2) * np.sin(dlon / 2) ** 2
+    )
+    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
+
+    return R * c
