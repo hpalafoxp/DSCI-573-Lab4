@@ -18,7 +18,7 @@ def custom_train_test_split(dataframe: pd.DataFrame, cat_col: str, test_size: fl
 
     for cat, count in df.groupby(cat_col, sort=False)[cat_col].agg("count").items():
         cum_count += count
-        if cum_count / len(df) < 1 - test_size:
+        if cum_count / len(df) >= 1 - test_size:
             cutoff = cat
             break
             
