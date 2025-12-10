@@ -24,7 +24,7 @@ def custom_train_test_split(dataframe: pd.DataFrame, cat_col: str, test_size: fl
             
     df = df.drop("ordered_cat", axis=1).set_index(cat_col)
 
-    train_df = df.loc[:cutoff].reset_index()
+    train_df = df.loc[:cutoff].iloc[:-1].reset_index()
     test_df = df.loc[cutoff:].reset_index()
 
     return train_df, test_df
