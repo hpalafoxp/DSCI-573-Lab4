@@ -144,7 +144,11 @@ def compute_feature_engineering(data):
     return data
 
 
-def get_important_features_important_than(shap_values, features):
+def is_outlier(x, p):
+    return x < np.percentile(x, p)
+
+
+def get_important_features_important_than(shap_values, features, random_feats):
     # Compute mean absolute SHAP values for each feature
     shap_importances = np.mean(np.abs(shap_values), axis=0)
 
@@ -162,17 +166,17 @@ def get_important_features_important_than(shap_values, features):
     for feature, importance in sorted_feature_importance:
         feature_importance_dict[f"{feature}"] = i
         i += 1
-    rand_min_importance = np.min(
+    rand_min_importance = np.max(
         [
-            feature_importance_dict["___RANDOM_1____"],
-            feature_importance_dict["___RANDOM_2____"],
+            feature_importance_dict[random_feats[0]],
+            feature_importance_dict[random_feats[1]],
         ]
     )
-    important_enough_features = sorted(
-        [
-            v[0]
-            for v in list(feature_importance_dict.items())
-            if v[1] < rand_min_importance
-        ]
-    )
-    return important_enough_features
+    important_enough_features = [
+        v[0]
+        for v in list(feature_importance_dict.items())
+        if v[1] < rand_min_importance
+        and v[0] != random_feats[0]
+        and v[0] != random_feats[1]
+    ]
+    return sorted_feature_importance, important_enough_features
